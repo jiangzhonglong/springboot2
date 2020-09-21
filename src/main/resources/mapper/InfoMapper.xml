@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.springboot2.mapper.InfoMapper">
+    <resultMap id="bookInfo" type="cn.hp.springboot2.pojo.bookInfo">
+        <id property="bookid" column="bookid"/>
+        <result property="bookname" column="bookname"/>
+        <result property="password" column="password"/>
+        <result property="price" column="price"/>
+        <result property="title" column="title"/>
+        <result property="note" column="note"/>
+        <!--配置多对一-->
+        <association property="type" javaType="cn.hp.springboot2.pojo.bookType">
+            <id property="typeid" column="typeid"/>
+            <result property="typename" column="typename"/>
+            <result property="note" column="note"/>
+        </association>
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="findAll" resultMap="bookInfo">
+        select * from bookInfo,bookType where bookInfo.typeId=bookType.typeId
+    </select>
+    <!--查询单条-->
+    <select id="findOne" resultMap="bookInfo">
+        select * from bookInfo,bookType where bookInfo.typeId=bookType.typeId and bookInfo.bookId=#{bookid}
+    </select>
+    <!--添加-->
+    <insert id="saveInfo" parameterType="cn.hp.springboot2.pojo.bookInfo">
+        insert into bookInfo(bookName,password,price,title,note,typeId) values (#{bookname},#{password},#{price},#{title},#{note},#{type.typeid})
+    </insert>
+    <!--删除-->
+    <delete id="delById">
+        delete from bookInfo where bookId=#{bookid}
+    </delete>
+    <!--修改-->
+    <update id="update" parameterType="cn.hp.springboot2.pojo.bookInfo">
+        update bookInfo set bookName=#{bookname},password=#{password},price=#{price},title=#{title},note=#{note},typeId=#{type.typeid} where bookId=#{bookid}
+    </update>
+</mapper>
